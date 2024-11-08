@@ -7,13 +7,6 @@ typedef struct
     int state[6][6][6];
 } CUBE;
 
-CUBE highestSuccessor(CUBE c)
-{
-    for(int i=1; i<=5; i++)
-    {
-        for(int j=1; j<=5)
-    }
-}
 int findValue(CUBE c)
 {
     int cnt=0;
@@ -62,6 +55,57 @@ int findValue(CUBE c)
     return cnt;
 }
 
+CUBE highestSuccessor(CUBE c)
+{
+    CUBE h;
+    h.value=-316;
+    int i_ans, j_ans, k_ans, l_ans, m_ans, n_ans;
+    for(int i=1; i<=5; i++)
+    {
+        for(int j=1; j<=5; j++)
+        {
+            for(int k=1; k<=5; k++)
+            {
+                for(int l=1; l<=5; l++)
+                {
+                    for(int m=1; m<=5; m++)
+                    {
+                        for (int n=1; n<=5; n++)
+                        {
+                            swap(c.state[i][j][k],c.state[l][m][n]);
+                            if(findValue(c)>h.value)
+                            {
+                                h.value=findValue(c);
+                                i_ans=i; j_ans=j; k_ans=k;
+                                l_ans=l; m_ans=m; n_ans=n;
+                            }
+                            swap(c.state[i][j][k],c.state[l][m][n]);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    swap(c.state[i_ans][j_ans][k_ans],c.state[l_ans][m_ans][n_ans]);
+    return c;
+}
+
+CUBE randomSuccessor(CUBE c)
+{
+    int i=((rand()%5)+1);
+    int j=((rand()%5)+1);
+    int k=((rand()%5)+1);
+    int l=((rand()%5)+1);
+    int m=((rand()%5)+1);
+    int n=((rand()%5)+1);
+    while(i==k && j==m && k==n)
+    {
+        k=((rand()%5)+1);
+    }
+    swap(c.state[i][j][k],c.state[l][m][n]);
+    return c;
+}
+
 void generateInitialState(CUBE *c)
 {
     int new_random;
@@ -106,7 +150,12 @@ void printState(CUBE c)
 }
 int main()
 {
+    srand(time(0));
     CUBE current;
     generateInitialState(&current);
     printState(current);
+    cout<<endl<<findValue(current)<<endl;
+    current=highestSuccessor(current);
+    printState(current);
+    cout<<endl<<findValue(current);
 }
