@@ -7,6 +7,13 @@ typedef struct
     int state[6][6][6];
 } CUBE;
 
+CUBE highestSuccessor(CUBE c)
+{
+    for(int i=1; i<=5; i++)
+    {
+        for(int j=1; j<=5)
+    }
+}
 int findValue(CUBE c)
 {
     int cnt=0;
