@@ -48,6 +48,10 @@ int findValue(CUBE c)
         if(c.state[i][1][5]+c.state[i][2][4]+c.state[i][3][3]+
         c.state[i][4][2]+c.state[i][5][1]!=315) cnt--;
     }
+    if(c.state[1][1][1]+c.state[2][2][2]+c.state[3][3][3]+c.state[4][4][4]+c.state[5][5][5]) cnt--;
+    if(c.state[5][1][1]+c.state[4][2][2]+c.state[3][3][3]+c.state[2][4][4]+c.state[1][5][5]) cnt--;
+    if(c.state[1][5][1]+c.state[2][4][2]+c.state[3][3][3]+c.state[4][2][4]+c.state[5][1][5]) cnt--;
+    if(c.state[5][5][1]+c.state[4][4][2]+c.state[3][3][3]+c.state[2][2][4]+c.state[1][1][5]) cnt--;
     return cnt;
 }
 
