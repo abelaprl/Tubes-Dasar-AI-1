@@ -7,88 +7,73 @@
 
 using namespace std;
 
-double calculateTemperature(double initialTemperature, double coolingRate, int time) {
-    return initialTemperature * pow(coolingRate, time);
+double calculateTemperature(double Temperature, int time) {
+    return Temperature - 0.000000001*time; //Nilai temperature dikurang dengan 0.000000001*time agar turun secara perlahan
 }
 
-/*
-double calculateTemperature(double initialTemperature, int time) {
-    return initialTemperature / log(time + 1);
-}
-*/
-
-void simulatedAnnealing(CUBE &current, double initialTemperature, double coolingRate, double threshold, int MAX_TIME) {
-    int time = 1;
+void simulatedAnnealing(CUBE &current) {
+    double threshold = 0.55;
+    int MAX_TIME = 100000;
+    int time = 0;
     CUBE bestState = current;
-    int bestValue = findValue(current);
+    int bestValue = findValue(current,0);
 
     vector<double> probability_values;  
     int stuck_count = 0;                
     int unchanged_iterations = 0;     
     const int stuck_threshold = 10; 
 
-    //double temperature = calculateTemperature(initialTemperature, time);
-    double temperature = calculateTemperature(initialTemperature, coolingRate, time);
+    double temperature = 2;
 
     while (time <= MAX_TIME) {
+        temperature=calculateTemperature(temperature,time);
+        if(temperature<=0) {cout << "Total stuck count (local optima): " << stuck_count << endl; return;}
         CUBE neighbor = randomSuccessor(current);
-        int neighborValue = findValue(neighbor);
+        int neighborValue = findValue(neighbor,0);
 
-        int deltaE = neighborValue - findValue(current);
-        double probability = exp(deltaE / temperature); // e^(deltaE / T)
-
+        int deltaE = neighborValue - findValue(current,0);
+        double probability;
+        if(deltaE>0) probability=1;
+        else probability = exp(double(deltaE) / temperature); // e^(deltaE / T)
         cout << "Iteration: " << time
                 << ", Temperature: " << temperature
                 << ", DeltaE: " << deltaE
                 << ", Probability (e^(DeltaE/T)): " << probability
                 << ", Threshold: " << threshold
-                << ", Best Value: " << bestValue << endl;
+                << ", Value: " << current.value << endl;
 
-        if (deltaE > 0 || (probability > threshold && ((double)rand() / RAND_MAX) < probability)) {
+        if (deltaE > 0) {
             current = neighbor;
-            if (neighborValue > bestValue) {
-                bestState = neighbor;
-                bestValue = neighborValue;
-            }
-            unchanged_iterations = 0;
         } else {
-            unchanged_iterations++;
-        }
-
-        if (unchanged_iterations >= stuck_threshold) {
+            if((probability > threshold && ((double)rand() / RAND_MAX) < probability)) current=neighbor;
             stuck_count++;
-            unchanged_iterations = 0;
         }
-
         time++;
-        //temperature = calculateTemperature(initialTemperature, time);
-        temperature = calculateTemperature(initialTemperature, coolingRate, time);
     }
-
-    current = bestState;
-
-    cout << "Total stuck count (local optima): " << stuck_count << endl;
 }
 
 int main() {
+    clock_t start, end;
+    start = clock();
     srand(time(0));
     CUBE current;
     generateInitialState(&current);
 
     cout << "Initial State:" << endl;
     printState(current);
-    cout << "Initial Value: " << findValue(current) << endl;
-
-    double initialTemperature = 2.0;
-    double threshold = 0.55;
-    int MAX_TIME = 25000; 
-    double coolingRate = 0.99; 
+    cout << "Initial Value: " << current.value << endl;
     
-    simulatedAnnealing(current, initialTemperature, coolingRate, threshold, MAX_TIME);
+    simulatedAnnealing(current);
 
     cout << "Final State after Simulated Annealing:" << endl;
     printState(current);
-    cout << "Final Value: " << findValue(current) << endl;
-
+    cout << "Final Value: " << findValue(current,0) << endl;
+     end = clock();
+ 
+    // Calculating total time taken by the program.
+    double time_taken = double(end - start) / double(CLOCKS_PER_SEC);
+    cout << "Time taken by program is : " << fixed 
+         << time_taken << setprecision(5);
+    cout << " sec " << endl;
     return 0;
 }

@@ -1,15 +1,10 @@
 #include <bits/stdc++.h>
+#include "LocalSearch.hpp"
 using namespace std;
 
-typedef struct
+int findValue(CUBE c, int maxVal)
 {
-    int value;
-    int state[6][6][6];
-} CUBE;
-
-int findValue(CUBE c)
-{
-    int cnt=0;
+    int cnt=maxVal;
     for(int i=1; i<=5; i++) 
     {
         for(int j=1; j<=5; j++)
@@ -73,9 +68,9 @@ CUBE highestSuccessor(CUBE c)
                         for (int n=1; n<=5; n++)
                         {
                             swap(c.state[i][j][k],c.state[l][m][n]);
-                            if(findValue(c)>h.value)
+                            if(findValue(c,0)>h.value)
                             {
-                                h.value=findValue(c);
+                                h.value=findValue(c,0);
                                 i_ans=i; j_ans=j; k_ans=k;
                                 l_ans=l; m_ans=m; n_ans=n;
                             }
@@ -103,6 +98,7 @@ CUBE randomSuccessor(CUBE c)
         k=((rand()%5)+1);
     }
     swap(c.state[i][j][k],c.state[l][m][n]);
+    c.value=findValue(c,0);
     return c;
 }
 
@@ -130,6 +126,7 @@ void generateInitialState(CUBE *c)
             }
         }
     }
+    c->value=findValue(*c,109);
 }
 
 void printState(CUBE c)
@@ -147,15 +144,4 @@ void printState(CUBE c)
         }
         cout<<endl;
     }
-}
-int main()
-{
-    srand(time(0));
-    CUBE current;
-    generateInitialState(&current);
-    printState(current);
-    cout<<endl<<findValue(current)<<endl;
-    current=highestSuccessor(current);
-    printState(current);
-    cout<<endl<<findValue(current);
 }

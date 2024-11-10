@@ -1,5 +1,5 @@
 #include <bits/stdc++.h> 
-#include "LocalSearch.hpp"
+#include "LocalSearch.cpp"
 using namespace std; 
 
 CUBE population[100];
@@ -148,7 +148,7 @@ int main() {
             } 
         }
         selection();
-        for(int i=0; i<POPULATION_SIZE/2; i++)
+        for(int i=0; i<POPULATION_SIZE; i+=2)
         {
             crossover(i,i+1);
         }
