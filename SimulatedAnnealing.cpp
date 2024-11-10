@@ -37,10 +37,12 @@ void simulatedAnnealing(CUBE &current, double initialTemperature, double cooling
         int deltaE = neighborValue - findValue(current);
         double probability = exp(deltaE / temperature); // e^(deltaE / T)
 
-        cout << "Temperature: " << temperature
-             << ", DeltaE: " << deltaE
-             << ", Probability (e^(DeltaE/T)): " << probability
-             << ", Threshold: " << threshold << endl;
+        cout << "Iteration: " << time
+                << ", Temperature: " << temperature
+                << ", DeltaE: " << deltaE
+                << ", Probability (e^(DeltaE/T)): " << probability
+                << ", Threshold: " << threshold
+                << ", Best Value: " << bestValue << endl;
 
         if (deltaE > 0 || (probability > threshold && ((double)rand() / RAND_MAX) < probability)) {
             current = neighbor;
