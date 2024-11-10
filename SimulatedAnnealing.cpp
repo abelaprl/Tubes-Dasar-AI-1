@@ -37,14 +37,12 @@ void simulatedAnnealing(CUBE &current, double initialTemperature, double cooling
         int deltaE = neighborValue - findValue(current);
         double probability = exp(deltaE / temperature); // e^(deltaE / T)
 
-        // probability_values.push_back(probability); buat visualisasi tp kayanya gajadi
-
         cout << "Temperature: " << temperature
              << ", DeltaE: " << deltaE
              << ", Probability (e^(DeltaE/T)): " << probability
              << ", Threshold: " << threshold << endl;
 
-        if (deltaE > 0 || (probability > threshold && ((double)rand() / RAND_MAX) < threshold)) {
+        if (deltaE > 0 || (probability > threshold && ((double)rand() / RAND_MAX) < probability)) {
             current = neighbor;
             if (neighborValue > bestValue) {
                 bestState = neighbor;
@@ -68,16 +66,6 @@ void simulatedAnnealing(CUBE &current, double initialTemperature, double cooling
     current = bestState;
 
     cout << "Total stuck count (local optima): " << stuck_count << endl;
-
-    
-    /*
-    // ini kayanya gajadi 
-    FILE *file = fopen("probability_values.txt", "w");
-    for (double prob : probability_values) {
-        fprintf(file, "%f\n", prob);
-    }
-    fclose(file);
-    */
 }
 
 int main() {
