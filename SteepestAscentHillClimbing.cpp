@@ -3,14 +3,8 @@
 
 using namespace std;
 
-void stochasticHillClimbing(CUBE initial)
+void steepestascentHillClimbing(CUBE initial)
 {
-    int maxIterations; // Menyimpan jumlah iterasi maksimal
-
-    // Meminta input jumlah iterasi dari pengguna
-    cout << "Masukkan jumlah iterasi maksimum: ";
-    cin >> maxIterations;
-
     auto start = chrono::high_resolution_clock::now();
     CUBE current = initial;
     int currentValue = findValue(current,0);
@@ -18,15 +12,18 @@ void stochasticHillClimbing(CUBE initial)
     values.push_back(currentValue);
     int iterations = 0;
 
-    while (iterations < maxIterations) // Limit iterasi maksimum
+    while (true) // Limit iterasi maksimum
     {
-        CUBE next = randomSuccessor(current);
+        CUBE next = highestSuccessor(current);
         int nextValue = findValue(next,0);
 
         if (nextValue > currentValue)
         {
             current = next;
             currentValue = nextValue;
+        }
+        else{
+            break;
         }
 
         values.push_back(currentValue);
@@ -66,6 +63,6 @@ int main()
     srand(time(0));
     CUBE cube;
     generateInitialState(&cube);
-    stochasticHillClimbing(cube);
+    steepestascentHillClimbing(cube);
     return 0;
 }
