@@ -62,8 +62,6 @@ int main() {
     cout << "Initial State:" << endl;
     printState(current);
     cout << "Initial Value: " << current.value << endl;
-
-     
     
     simulatedAnnealing(current);
 
