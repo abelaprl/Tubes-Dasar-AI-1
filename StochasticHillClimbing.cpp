@@ -5,14 +5,20 @@ using namespace std;
 
 void stochasticHillClimbing(CUBE initial)
 {
+    int maxIterations; // Menyimpan jumlah iterasi maksimal
+
+    // Meminta input jumlah iterasi dari pengguna
+    cout << "Masukkan jumlah iterasi maksimum: ";
+    cin >> maxIterations;
+
+    auto start = chrono::high_resolution_clock::now();
     CUBE current = initial;
     int currentValue = findValue(current);
     vector<int> values;
     values.push_back(currentValue);
     int iterations = 0;
-    auto start = chrono::high_resolution_clock::now();
 
-    while (iterations < 100) // Limit iterasi maksimum
+    while (iterations < maxIterations) // Limit iterasi maksimum
     {
         CUBE next = randomSuccessor(current);
         int nextValue = findValue(next);
@@ -30,9 +36,6 @@ void stochasticHillClimbing(CUBE initial)
             break;
     }
 
-    auto end = chrono::high_resolution_clock::now();
-    chrono::duration<double> duration = end - start;
-
     // Tampilkan hasil
     
     // Plot nilai objective function
@@ -49,8 +52,13 @@ void stochasticHillClimbing(CUBE initial)
     cout << "\nState Akhir:" << endl;
     printState(current);
     cout << "Nilai Objective Function Akhir: " << currentValue << endl;
-    cout << "Durasi: " << duration.count() << " detik" << endl;
+
     cout << "Total Iterasi: " << iterations << endl;
+
+    auto end = chrono::high_resolution_clock::now();
+    chrono::duration<double> duration = end - start;
+
+    cout << "Durasi: " << duration.count() << " detik" << endl;
 }
 
 int main()
