@@ -1,5 +1,5 @@
 #include <bits/stdc++.h>
-#include "DummyLocalSearch.h"
+#include "DummyLocalSearch.cpp"
 
 using namespace std;
 
