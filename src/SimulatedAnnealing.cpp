@@ -15,12 +15,11 @@ double calculateTemperature(double Temperature, int time) {
 
 void simulatedAnnealing(CUBE &current) {
     double threshold = 0.55;
-    int MAX_TIME = 100000;
+    int MAX_TIME = 50000;
     int time = 0;
     CUBE bestState = current;
     int bestValue = findValue(current,0);
 
-    vector<double> probability_values;  
     int stuck_count = 0;                
     int unchanged_iterations = 0;     
     const int stuck_threshold = 10; 
@@ -28,13 +27,11 @@ void simulatedAnnealing(CUBE &current) {
     double temperature = 2;
 
     int currentValue = findValue(current, 0);
-    vector<int> values;
-    values.push_back(currentValue);
 
     ofstream outfile("objective_values.txt");
     ofstream probfile("probability_values.txt");
 
-    while (time <= MAX_TIME) {
+    while (time <= MAX_TIME-1) {
         temperature=calculateTemperature(temperature,time);
         if(temperature<=0) {cout << "Total stuck count (local optima): " << stuck_count << endl; return;}
         CUBE neighbor = randomSuccessor(current);
@@ -47,7 +44,7 @@ void simulatedAnnealing(CUBE &current) {
 
         probfile << probability << endl; 
 
-        cout << "Iteration: " << time
+        cout << "Iteration: " << time+1
                 << ", Temperature: " << temperature
                 << ", DeltaE: " << deltaE
                 << ", Probability (e^(DeltaE/T)): " << probability
@@ -62,19 +59,14 @@ void simulatedAnnealing(CUBE &current) {
             stuck_count++;
         }
         
-        values.push_back(currentValue);
         outfile << currentValue << endl;
         time++;
     }
 
     outfile.close(); 
     probfile.close(); 
-    cout << "Objective function values saved to objective_values.txt" << endl;
-    cout << "Probability values saved to probability_values.txt" << endl;
+    cout << "Total stuck count (local optima): " << stuck_count << endl;
 
-    cout << "Final State after Simulated Annealing:" << endl;
-    printState(current);
-    cout << "Final Objective Function Value: " << currentValue << endl;
 }
 
 int main() {
@@ -96,7 +88,7 @@ int main() {
     cout << "Final Value: " << findValue(current,0) << endl;
      end = clock();
  
-    // Calculating total time taken by the program.
+    // Menghitung lama jalannya program
     double time_taken = double(end - start) / double(CLOCKS_PER_SEC);
     cout << "Time taken by program is : " << fixed 
          << time_taken << setprecision(5);
