@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 
 
 values = []
-with open('src/objective_values.txt', 'r') as file:
+with open('objective_values.txt', 'r') as file:
     for line in file:
         values.append(float(line.strip()))
 

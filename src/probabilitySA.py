@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 
 probabilities = []
-with open("src/probability_values.txt", "r") as file:
+with open("probability_values.txt", "r") as file:
     for line in file:
         probabilities.append(float(line.strip()))
 
