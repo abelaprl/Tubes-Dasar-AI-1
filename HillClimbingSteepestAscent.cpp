@@ -1,26 +1,29 @@
 #include <bits/stdc++.h>
-#include "DummyLocalSearch.h"
+#include "LocalSearch.hpp"
 
 using namespace std;
 
-void stochasticHillClimbing(CUBE initial)
+void HillClimbingSteepestAscent(CUBE initial)
 {
+    auto start = chrono::high_resolution_clock::now();
     CUBE current = initial;
-    int currentValue = findValue(current);
+    int currentValue = findValue(current,0);
     vector<int> values;
     values.push_back(currentValue);
     int iterations = 0;
-    auto start = chrono::high_resolution_clock::now();
 
-    while (iterations < 100) // Limit iterasi maksimum
+    while (true) // Limit iterasi maksimum
     {
-        CUBE next = randomSuccessor(current);
-        int nextValue = findValue(next);
+        CUBE next = highestSuccessor(current);
+        int nextValue = findValue(next,0);
 
         if (nextValue > currentValue)
         {
             current = next;
             currentValue = nextValue;
+        }
+        else{
+            break;
         }
 
         values.push_back(currentValue);
@@ -29,9 +32,6 @@ void stochasticHillClimbing(CUBE initial)
         if (currentValue == 0) // Tujuan tercapai
             break;
     }
-
-    auto end = chrono::high_resolution_clock::now();
-    chrono::duration<double> duration = end - start;
 
     // Tampilkan hasil
     
@@ -44,13 +44,18 @@ void stochasticHillClimbing(CUBE initial)
 
     cout << "State Awal:" << endl;
     printState(initial);
-    cout << "Nilai Objective Function Awal: " << findValue(initial) << endl;
+    cout << "Nilai Objective Function Awal: " << findValue(initial,0) << endl;
 
     cout << "\nState Akhir:" << endl;
     printState(current);
     cout << "Nilai Objective Function Akhir: " << currentValue << endl;
-    cout << "Durasi: " << duration.count() << " detik" << endl;
+
     cout << "Total Iterasi: " << iterations << endl;
+
+    auto end = chrono::high_resolution_clock::now();
+    chrono::duration<double> duration = end - start;
+
+    cout << "Durasi: " << duration.count() << " detik" << endl;
 }
 
 int main()
@@ -58,6 +63,6 @@ int main()
     srand(time(0));
     CUBE cube;
     generateInitialState(&cube);
-    stochasticHillClimbing(cube);
+    HillClimbingSteepestAscent(cube);
     return 0;
 }
