@@ -1,5 +1,5 @@
 #include <bits/stdc++.h> 
-#include "LocalSearch.cpp"
+#include "LocalSearch.hpp"
 using namespace std; 
 
 CUBE population[10000];
