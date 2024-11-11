@@ -32,6 +32,7 @@ void simulatedAnnealing(CUBE &current) {
     values.push_back(currentValue);
 
     ofstream outfile("objective_values.txt");
+    ofstream probfile("probability_values.txt");
 
     while (time <= MAX_TIME) {
         temperature=calculateTemperature(temperature,time);
@@ -43,6 +44,9 @@ void simulatedAnnealing(CUBE &current) {
         double probability;
         if(deltaE>0) probability=1;
         else probability = exp(double(deltaE) / temperature); // e^(deltaE / T)
+
+        probfile << probability << endl; 
+
         cout << "Iteration: " << time
                 << ", Temperature: " << temperature
                 << ", DeltaE: " << deltaE
@@ -64,7 +68,9 @@ void simulatedAnnealing(CUBE &current) {
     }
 
     outfile.close(); 
+    probfile.close(); 
     cout << "Objective function values saved to objective_values.txt" << endl;
+    cout << "Probability values saved to probability_values.txt" << endl;
 
     cout << "Final State after Simulated Annealing:" << endl;
     printState(current);
