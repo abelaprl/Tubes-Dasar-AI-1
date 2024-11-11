@@ -204,5 +204,5 @@ int main() {
     finalState = population[idxBestState];
     cout<<"FINAL STATE: "<<endl;
     printState(finalState);
-    cout<<"OBJECTIVE VALUE: "<<findValue(finalState, 109)<<endl<<endl;
+    cout<<"FINAL OBJECTIVE VALUE: "<<findValue(finalState, 109)<<endl<<endl;
 }
