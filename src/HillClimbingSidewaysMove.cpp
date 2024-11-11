@@ -83,6 +83,6 @@ int main()
     HillClimbingSidewaysMove(cube, maxsideways);
     auto end = chrono::high_resolution_clock::now();
     chrono::duration<double> duration = end - start;
-    cout << "\nDurasi: " << duration.count() << " detik" << endl;
+    cout << "\nDurasi: " << duration.count() << " detik\n" << endl;
     return 0;
 }
