@@ -5,12 +5,12 @@ using namespace std;
 
 void HillClimbingSteepestAscent(CUBE initial)
 {
-    auto start = chrono::high_resolution_clock::now();
     CUBE current = initial;
     int currentValue = findValue(current,0);
     vector<int> values;
-    values.push_back(currentValue);
     int iterations = 0;
+
+    ofstream outfile("objective_values.txt");
 
     while (true) // Limit iterasi maksimum
     {
@@ -27,22 +27,26 @@ void HillClimbingSteepestAscent(CUBE initial)
         }
 
         values.push_back(currentValue);
+        outfile << currentValue << endl;
         iterations++;
 
         if (currentValue == 0) // Tujuan tercapai
             break;
     }
 
+    outfile.close(); 
+
     // Tampilkan hasil
     
-    // Plot nilai objective function
-    cout << "\nPlot Nilai Objective Function per Iterasi:" << endl;
-    for (int i = 0; i < (values.size()-1); i++) //values.size() - 1 itu supaya tidak memasukkan yang state awal
+    // nilai objective function per iterasi
+    cout << "\nNilai Objective Function per Iterasi:" << endl;
+    for (int i = 0; i < (values.size()); i++) //values.size() - 1 itu supaya tidak memasukkan yang state awal
     {
         cout << "Iterasi " << i + 1 << ": " << values[i] << endl;
     }
 
-    cout << "State Awal:" << endl;
+    cout << "\nGrafik Plot objective function terhadap banyak iterasi dapat dilihat dengan menjalankan file objectiveValue.py" << endl;
+    cout << "\nState Awal:" << endl;
     printState(initial);
     cout << "Nilai Objective Function Awal: " << findValue(initial,0) << endl;
 
@@ -50,19 +54,18 @@ void HillClimbingSteepestAscent(CUBE initial)
     printState(current);
     cout << "Nilai Objective Function Akhir: " << currentValue << endl;
 
-    cout << "Total Iterasi: " << iterations << endl;
-
-    auto end = chrono::high_resolution_clock::now();
-    chrono::duration<double> duration = end - start;
-
-    cout << "Durasi: " << duration.count() << " detik" << endl;
+    cout << "\nTotal Iterasi: " << iterations << endl;
 }
 
 int main()
 {
     srand(time(0));
+    auto start = chrono::high_resolution_clock::now();
     CUBE cube;
     generateInitialState(&cube);
     HillClimbingSteepestAscent(cube);
+    auto end = chrono::high_resolution_clock::now();
+    chrono::duration<double> duration = end - start;
+    cout << "\nDurasi: " << duration.count() << " detik\n" << endl;
     return 0;
 }
