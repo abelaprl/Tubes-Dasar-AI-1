@@ -1,40 +1,63 @@
 #include <bits/stdc++.h> 
-#include "LocalSearch.hpp"
+#include "LocalSearch.cpp"
 using namespace std; 
 
-CUBE population[100];
+CUBE population[200];
 int POPULATION_SIZE;
 int ITERATION_TOTAL;
+int fitnessTotal;
+
+void generatePopulation()
+{
+    cout<<"INITIAL STATE: "<<endl;
+	for(int i=0; i<POPULATION_SIZE; i++) 
+	{ 
+        CUBE gnome;
+		generateInitialState(&gnome); 
+        population[i] = gnome;
+        cout<<"INDIVIDUAL KE-"<<i+1<<endl;
+        printState(population[i]);
+        cout<<"OBJECTIVE VALUE: "<<findValue(population[i], 109)<<endl<<endl;
+	} 
+}
 
 void selection()
 {
-    int fitnessTotal=0;
+    // percentage fitness of each state
     double percentageFitnessLevel[POPULATION_SIZE];
-    for(int i=0; i<POPULATION_SIZE; i++)
-    {
-        fitnessTotal+=population[i].value;
-    }
     for(int i=0; i<POPULATION_SIZE; i++)
     {
         percentageFitnessLevel[i]=double(population[i].value)/double(fitnessTotal);
     }
 
+    // sequence of fitness value's percentage
     double fitnessOrder[POPULATION_SIZE];
-    fitnessOrder[0] = 0;
-    for(int i=1; i<POPULATION_SIZE; i++)
+    int idxMax = 0;
+    fitnessOrder[0] = double(percentageFitnessLevel[0])*100;
+
+    for (int i=1; i<POPULATION_SIZE; i++)
     {
-        fitnessOrder[i] = fitnessOrder[i-1] + double(population[i].value);
+        fitnessOrder[i] = fitnessOrder[i-1] + double(percentageFitnessLevel[i])*100;
+        if (fitnessOrder[i] > 0)
+        {
+            idxMax = i;
+        }
     }
-    double maxNumber = fitnessOrder[POPULATION_SIZE-1];
-    fitnessOrder[POPULATION_SIZE-1] = 100;
-    
+    fitnessOrder[idxMax] = 100;
+
     CUBE parent[POPULATION_SIZE];
     for (int i=0; i<POPULATION_SIZE; i++) {
         double randomNumber = (rand()%101);
-        for (int j=0; j<POPULATION_SIZE; j++) {
-            if ((fitnessOrder[j]) > randomNumber) parent[i] = population[j];
+        for (int j=0; j<POPULATION_SIZE; j++)
+        {
+            if ((fitnessOrder[j]) >= randomNumber && fitnessOrder[j] != 0)
+            {
+                parent[i] = population[j];
+                break;
+            }
         }
     }    
+
     for(int i=0; i<POPULATION_SIZE; i++)
     {
         population[i]=parent[i];
@@ -120,47 +143,66 @@ int main() {
     srand(time(0));
     cin>>POPULATION_SIZE>>ITERATION_TOTAL;
     bool found = false; 
-
-    // current generation 
 	int generation = 0; 
-    // generate population
-	for(int i=0; i<POPULATION_SIZE; i++) 
-	{ 
-        CUBE gnome;
-		generateInitialState(&gnome); 
-        population[i] = gnome;
-        printState(population[i]);
-	} 
-    
-	while (!found && generation<ITERATION_TOTAL)
-	{ 
-		// sort the population in increasing order of fitness score 
-		//sort(population,population+POPULATION_SIZE); 
+    CUBE finalState;
+    bool notNaN = false;
+    fitnessTotal = 0;
+    int bestValue, idxBestState = 0;
 
-		// if the individual having 0 fitness score then we know that we have reached to the target 
-		// so break the loop 
+    while (!notNaN)
+    {
+        generatePopulation();
+
+        // make sure at least there's one state that has value > 0
         for(int i=0; i<POPULATION_SIZE; i++)
         {
-            if(population[POPULATION_SIZE-1].value == 109) 
+            fitnessTotal+=population[i].value;
+        }
+        if (fitnessTotal > 0) notNaN = true;
+    }
+    
+    selection();
+    for (int i=0; i<POPULATION_SIZE; i++) {
+        cout<<"nilai parent ke-"<<i+1<<": "<<findValue(population[i], 109)<<endl;
+    }
+	while (!found && generation<ITERATION_TOTAL)
+	{
+        selection();
+        // if the individual having 0 fitness score then we know that we have reached to the target so break the loop
+        for(int i=0; i<POPULATION_SIZE; i++)
+        {
+            if(population[i].value == 109) 
             { 
                 found = true; 
+                idxBestState = i;
                 break; 
             } 
         }
-        selection();
+
         for(int i=0; i<POPULATION_SIZE/2; i++)
         {
             crossover(i,i+1);
         }
+
         //mutation
         for (int i=0; i<POPULATION_SIZE; i++) {
             population[i]=randomSuccessor(population[i]);
         }
+
         generation++;
     }
-    cout<<"FINAL STATE:"<<endl;
+
     for(int i=0; i<POPULATION_SIZE; i++)
     {
-        printState(population[i]);
+        if (findValue(population[i], 109) > bestValue)
+        {
+            bestValue = findValue(population[i], 109);
+            idxBestState = i;
+        }
     }
+
+    finalState = population[idxBestState];
+    cout<<"FINAL STATE: "<<endl;
+    printState(finalState);
+    cout<<"OBJECTIVE VALUE: "<<findValue(finalState, 109)<<endl<<endl;
 }
